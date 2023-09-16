@@ -291,6 +291,61 @@ CREATING OUR DASHBOARD
 
 Previously, we had created our target tables to consolidate and store the data you pulled from the Cyclistic datasets. These tables will allow us to develop a dashboard using Tableau!
 
+The next thing is for us to create a visualization for the Cyclistic project! we will use your project planning documents and completed target table to build a BI visualization tool.
+
+In this activity, we created data visualizations, a low fidelity mockup to help us plan the components and layout of our dashboard, charts to be included in our visualization, and a dashboard for Cyclistic. we also completed an executive summary document that describes to Cyclistic stakeholders the business needs, project goals, dashboard functionality, and our BI methods.
+
+Link to complete dashboard on tableau- https://public.tableau.com/app/profile/halimah5233/viz/CyclisticDashboardProject_16948792789650/CyclisticExemplar
+
+Summer Trends
+
+<img width="957" alt="Cyclist 1" src="https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/assets/80160857/6f7bc1a7-7290-49aa-a2d3-375d78f7c340">
+
+
+The first tab of the dashboard is a map of seasonal trends of bike trips in each of the New York boroughs. The largest map shows each of the boroughs. The table compares the number of trips and average trip duration for customers and subscribers in each neighborhood. Three smaller maps focus on July, August, and September: the three months with the highest bike traffic.
+
+This map features several filters to focus on specific bike IDs, user types, metrics, months, starting neighborhoods, and ending neighborhoods. Using any of these filters or clicking on a borough in one of the maps updates the table and maps to focus on your selection in greater detail.
+
+Seasonality
+
+The second tab of the dashboard focuses on seasonality, or trends throughout the year, with the Trip Totals chart and the Trip Counts by Starting Neighborhood table. 
+
+<img width="957" alt="Cyclist 2" src="https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/assets/80160857/51b4a9f3-ee4b-49cc-bc6a-c876b5566239">
+
+
+Trip Totals chart
+
+The Trip Totals chart visualizes the total number of bike trips taken throughout 2019 and 2020, with a distinction between customers and subscribers. This chart shows that subscribers make up a significantly larger portion of Cyclistic’s users than regular customers. It also shows that there are far more users in warmer months (May–October) than there are in colder months. This makes sense considering that people are less likely to ride bicycles in colder weather.
+
+This chart was made by putting the Start Day (aggregated by month) in the columns field, the sum of Trip Counts in the rows filed, and UserType as color assignment.
+
+Trip Counts by Starting Neighborhood table
+The Trip Counts by Starting Neighborhood table lists the total number of bike trips started in each neighborhood in each month of 2019 and 2020. It is organized by zip code, borough, and neighborhood. It also uses a color gradient to emphasize the highest and lowest counts of monthly trips. The greater the number of trips, the darker the value is in the table. It also uses light text on the darker values to ensure that the table is readable and accessible.
+
+Because the starting location is more indicative of where users look for a bike, it is more important to emphasize starting location when determining where to advertise. The most active stations are in the Lower East Side and the Chelsea and Clinton neighborhoods. The most active months are from May to October.
+
+This table was created by putting the Start Day dimension (aggregated by Year and Month) in the Columns field, then the Borough Start and Neighborhood Start dimensions in the Rows field. Then, the color and labels can be set by putting the sum of the Trip Count measure into the Color and Label fields.
+
+Top Trips
+
+The third and final tab of the dashboard is a comparison of the total number of trip minutes by starting neighborhood and ending neighborhood for both customers and subscribers. The two charts are horizontal stacked bar graphs that are ordered from highest to lowest number of minutes (between customers and subscribers combined).
+
+<img width="957" alt="cyclist 3" src="https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/assets/80160857/17d735d3-b676-4224-8450-1f4da9c1e19e">
+
+
+These charts lend insight into which locations users are most willing to travel long distances to. The charts show that the Lower East Side and Chelsea and Clinton neighborhoods have the highest total trip minutes for both start and end stations. 
+
+To make the starting neighborhood chart, you can put the sum of Trip Minutes in the columns field, and then the Zip Code Start, Neighborhood Start, and Borough Start dimensions in the rows field. Then, set UserType as the color assignments. To make the ending neighborhood chart, complete the same steps but use the Zip Code End, Neighborhood End, and Borough End dimensions.
+
+
+
+
+
+
+
+
+
+
 
 
 
