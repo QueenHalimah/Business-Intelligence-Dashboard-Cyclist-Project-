@@ -161,11 +161,135 @@ Planning Document:
 
 [Activity_ Strategy Document - Cyclistic.pdf](https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/files/12641203/Activity_.Strategy.Document.-.Cyclistic.pdf)
 
+CREATING OUR TARGET TABLE
+
 The next step in our project will be to use our knowledge of SQL and potentially Google Dataflow to combine and move the key datasets you identified for the Cyclistic project into a target table. This represents the extraction phase of an ETL pipeline, when data is pulled from different sources and moved to its destination. I will then use the table created in this activity to develop the final dashboard for stakeholders.
 
 The key metrics the stakeholders and I have identified, their business questions, and what data you’ll need to develop the final dashboard is crucial. Previously, we explored the different public datasets that stakeholders provided and uploaded the zip code table a colleague shared with me. For the final dashboard, I will need to create two target tables: a table to capture the entire year and a table that focuses on summer trends. Here is an example of a query to capture a table with data from the entire year:
 
+  ```SELECT
+  TRI.usertype,
+  ZIPSTART.zip_code AS zip_code_start,
+  ZIPSTARTNAME.borough borough_start,
+  ZIPSTARTNAME.neighborhood AS neighborhood_start,
+  ZIPEND.zip_code AS zip_code_end,
+  ZIPENDNAME.borough borough_end,
+  ZIPENDNAME.neighborhood AS neighborhood_end, -- Since this is a fictional dashboard, you can add 5 years to make it look recent
+  DATE_ADD(DATE(TRI.starttime), INTERVAL 5 YEAR) AS start_day,
+  DATE_ADD(DATE(TRI.stoptime), INTERVAL 5 YEAR) AS stop_day,
+  WEA.temp AS day_mean_temperature, -- Mean temp
+  WEA.wdsp AS day_mean_wind_speed, -- Mean wind speed
+  WEA.prcp day_total_precipitation, -- Total precipitation
+  -- Group trips into 10 minute intervals to reduces the number of rows
+  ROUND(CAST(TRI.tripduration / 60 AS INT64), -1) AS trip_minutes,
+  COUNT(TRI.bikeid) AS trip_count
+FROM
+  `bigquery-public-data.new_york_citibike.citibike_trips` AS TRI
+INNER JOIN
+  `bigquery-public-data.geo_us_boundaries.zip_codes` ZIPSTART
+  ON ST_WITHIN(
+    ST_GEOGPOINT(TRI.start_station_longitude, TRI.start_station_latitude),
+    ZIPSTART.zip_code_geom)
+INNER JOIN
+  `bigquery-public-data.geo_us_boundaries.zip_codes` ZIPEND
+  ON ST_WITHIN(
+    ST_GEOGPOINT(TRI.end_station_longitude, TRI.end_station_latitude),
+    ZIPEND.zip_code_geom)
+INNER JOIN
+  `bigquery-public-data.noaa_gsod.gsod20*` AS WEA
+  ON PARSE_DATE("%Y%m%d", CONCAT(WEA.year, WEA.mo, WEA.da)) = DATE(TRI.starttime)
+INNER JOIN
+  -- Note! Add your zip code table name, enclosed in backticks: `example_table`
+  `(insert your table name) zipcodes` AS ZIPSTARTNAME
+  ON ZIPSTART.zip_code = CAST(ZIPSTARTNAME.zip AS STRING)
+INNER JOIN
+  -- Note! Add your zipcode table name, enclosed in backticks: `example_table`
+  `(insert your table name) zipcodes` AS ZIPENDNAME
+  ON ZIPEND.zip_code = CAST(ZIPENDNAME.zip AS STRING)
+WHERE-- This takes the weather data from one weather station
+  WEA.wban = '94728' -- NEW YORK CENTRAL PARK
+  -- Use data from 2014 and 2015
+  AND EXTRACT(YEAR FROM DATE(TRI.starttime)) BETWEEN 2014 AND 2015
+GROUP BY
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13
+```
+Note that this query includes a DATE_ADD function to add five years to the data. The public data we are using to create this dashboard is from 2014 and 2015, so this is a way to make my dashboard appear more recent. Once we execute the code, it will take a few moments to process. After the query has finished running, we will be able to download the tables as CSV files by using the Save Results dropdown and selecting the appropriate file type. Example at screenshot below:
 
+![Project Target Table](https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/assets/80160857/b37abc5f-955f-4576-ab63-e5efc054bc5e)
+
+The result of this query is a merged target table that JOINs the public datasets and the zip code table that was uploaded. 
+
+Additionally, we will need to execute a query that captured data from just the summer season:
+
+``` SELECT
+ TRI.usertype,
+ TRI.start_station_longitude,
+ TRI.start_station_latitude,
+ TRI.end_station_longitude,
+ TRI.end_station_latitude,
+ ZIPSTART.zip_code AS zip_code_start,
+ ZIPSTARTNAME.borough borough_start,
+ ZIPSTARTNAME.neighborhood AS neighborhood_start,
+ ZIPEND.zip_code AS zip_code_end,
+  ZIPENDNAME.borough borough_end,
+  ZIPENDNAME.neighborhood AS neighborhood_end,
+ -- Since we're using trips from 2014 and 2015, we will add 5 years to make it look recent
+  DATE_ADD(DATE(TRI.starttime), INTERVAL 5 YEAR) AS start_day,
+ DATE_ADD(DATE(TRI.stoptime), INTERVAL 5 YEAR) AS stop_day,
+  WEA.temp AS day_mean_temperature, -- Mean temp
+ WEA.wdsp AS day_mean_wind_speed, -- Mean wind speed
+  WEA.prcp day_total_precipitation, -- Total precipitation
+  -- We will group trips into 10 minute intervals, which also reduces the number of 
+rowsROUND(CAST(TRI.tripduration / 60 AS INT64), -1) AS trip_minutes,
+ TRI.bikeid
+FROM  
+ `bigquery-public-data.new_york_citibike.citibike_trips` AS TRI
+INNER JOIN
+`bigquery-public-data.geo_us_boundaries.zip_codes` ZIPSTART
+ON ST_WITHIN(
+ST_GEOGPOINT(TRI.start_station_longitude, TRI.start_station_latitude),
+ ZIPSTART.zip_code_geom)
+INNER JOIN
+`bigquery-public-data.geo_us_boundaries.zip_codes` ZIPEND
+ON ST_WITHIN(
+ ST_GEOGPOINT(TRI.end_station_longitude, TRI.end_station_latitude),
+ZIPEND.zip_code_geom)
+INNER JOIN
+ -- https://pantheon.corp.google.com/bigquery?p=bigquery-public-data&d=noaa_gsod
+ `bigquery-public-data.noaa_gsod.gsod20*` AS WEA
+ ON PARSE_DATE("%Y%m%d", CONCAT(WEA.year, WEA.mo, WEA.da)) = DATE(TRI.starttime)
+INNER JOIN
+-- Note! Add your zipcode table name, enclosed in backticks: `example_table`
+`legalbi.sandbox.zipcodes` AS ZIPSTARTNAME
+ON ZIPSTART.zip_code = CAST(ZIPSTARTNAME.zip AS STRING)
+INNER JOIN
+ -- Note! Add your zipcode table name below, enclosed in backticks: `example_table`
+  `legalbi.sandbox.zipcodes` AS ZIPENDNAME
+   ON ZIPEND.zip_code = CAST(ZIPENDNAME.zip AS STRING)
+WHERE
+-- Take the weather from one weather station
+  WEA.wban = '94728' -- NEW YORK CENTRAL PARK
+ -- Use data for three summer months
+AND DATE(TRI.starttime) BETWEEN DATE('2015-07-01') AND DATE('2015-09-30')
+```
+
+This query results into a similar table as the previous query, except it focuses on trends from July through September. This might take a few minutes. Once we have downloaded the table, we will be ready to upload it to Tableau to create your dashboard!
+
+CREATING OUR DASHBOARD
+
+Previously, we had created our target tables to consolidate and store the data you pulled from the Cyclistic datasets. These tables will allow us to develop a dashboard using Tableau!
 
 
 
