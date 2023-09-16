@@ -147,3 +147,33 @@ Whether the information is relevant to the project
 
 Whether the metrics are effective or not
 
+Let's start by reviewing what we have in our Stakeholder Requirements Document, Project Requirements Document, and Planning Document.
+
+Stakeholder Requirements Document:
+
+[Activity_ Stakeholder Requirements Document - Cyclistic.pdf](https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/files/12641186/Activity_.Stakeholder.Requirements.Document.-.Cyclistic.pdf)
+
+Project Requirements Document:
+
+[Activity_ Project Requirements Document - Cyclistic.pdf](https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/files/12641200/Activity_.Project.Requirements.Document.-.Cyclistic.pdf)
+
+Planning Document:
+
+[Activity_ Strategy Document - Cyclistic.pdf](https://github.com/QueenHalimah/Business-Intelligence-Dashboard-Cyclist-Project-/files/12641203/Activity_.Strategy.Document.-.Cyclistic.pdf)
+
+The next step in our project will be to use our knowledge of SQL and potentially Google Dataflow to combine and move the key datasets you identified for the Cyclistic project into a target table. This represents the extraction phase of an ETL pipeline, when data is pulled from different sources and moved to its destination. I will then use the table created in this activity to develop the final dashboard for stakeholders.
+
+The key metrics the stakeholders and I have identified, their business questions, and what data you’ll need to develop the final dashboard is crucial. Previously, we explored the different public datasets that stakeholders provided and uploaded the zip code table a colleague shared with me. For the final dashboard, I will need to create two target tables: a table to capture the entire year and a table that focuses on summer trends. Here is an example of a query to capture a table with data from the entire year:
+
+
+
+
+
+
+
+
+
+
+
+
+
